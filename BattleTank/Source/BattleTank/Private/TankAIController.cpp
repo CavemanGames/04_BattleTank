@@ -2,6 +2,7 @@
 
 #include "TankAIController.h"
 #include "EngineMinimal.h"
+#include "Tank.h"
 
 void ATankAIController::BeginPlay()
 {
@@ -13,8 +14,6 @@ void ATankAIController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (GetPlayerTank())
 	{
-		// TODO Move Towards the player
-
 		// Aim towards the player
 		GetControlledTank()->AimAt(GetPlayerTank()->GetActorLocation());
 

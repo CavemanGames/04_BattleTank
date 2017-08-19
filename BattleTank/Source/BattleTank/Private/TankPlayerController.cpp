@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankPlayerController.h"
+#include "Tank.h"
 
 #define OUT
 
@@ -24,7 +25,7 @@ ATank* ATankPlayerController::GetControlledTank() const
 void ATankPlayerController::AimTowardsCrosshair()
 {
 	if (!GetControlledTank()) { return; }
-
+	
 	FVector HitLocation;	// Out parameter
 
 	if (GetSightRayHitLocation(HitLocation)) // Has "side-efect", is going to line trace
