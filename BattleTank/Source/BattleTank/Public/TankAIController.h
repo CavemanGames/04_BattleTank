@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Caveman Games Copyright 2017
 
 #pragma once
 
@@ -18,6 +18,8 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
-	
-	
+
+private:
+	UPROPERTY(EditDefaultsOnly)
+		float AcceptanceRadius = 3000.f;
 };

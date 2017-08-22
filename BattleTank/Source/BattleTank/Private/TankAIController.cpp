@@ -1,8 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Caveman Games Copyright 2017
 
 #include "TankAIController.h"
-#include "EngineMinimal.h"
-#include "Tank.h"
+#include "TankAimingComponent.h"
 
 void ATankAIController::BeginPlay()
 {
@@ -13,14 +12,14 @@ void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	ATank* PlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
-	ATank* ControlledTank = Cast<ATank>(GetPawn());
+	auto PlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 
-	if (PlayerTank)
-	{
-		// Aim towards the player
-		ControlledTank->AimAt(PlayerTank->GetActorLocation());
-		
-		ControlledTank->Fire();
-	}
+	if (!ensure(PlayerTank && AimingComponent)) { return; }
+
+	MoveToActor(PlayerTank, AcceptanceRadius);
+
+	AimingComponent->AimAt(PlayerTank->GetActorLocation());
+
+	AimingComponent->Fire();
 }

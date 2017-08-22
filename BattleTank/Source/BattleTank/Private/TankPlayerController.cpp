@@ -1,13 +1,19 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Caveman Games Copyright 2017
 
 #include "TankPlayerController.h"
-#include "Tank.h"
+#include "TankAimingComponent.h"
 
 #define OUT
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+
+	if (!ensure(AimingComponent)) { return; }
+
+	FoundAimingComponent(AimingComponent);
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -17,20 +23,16 @@ void ATankPlayerController::Tick(float DeltaTime)
 	AimTowardsCrosshair();
 }
 
-ATank* ATankPlayerController::GetControlledTank() const
-{
-	return Cast<ATank>(GetPawn());
-}
-
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	if (!GetControlledTank()) { return; }
-	
-	FVector HitLocation;	// Out parameter
+	if (!ensure(GetPawn())) { return; }
 
+	AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	if (!ensure(AimingComponent)) { return; }
+	FVector HitLocation;	// Out parameter
 	if (GetSightRayHitLocation(HitLocation)) // Has "side-efect", is going to line trace
 	{
-		GetControlledTank()->AimAt(HitLocation);
+		AimingComponent->AimAt(HitLocation);
 	}
 }
 
@@ -50,9 +52,8 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) cons
 	if (GetLookDirection(ScreenLocation, LookDirection))
 	{
 		// Line-trace along that look direction, and see what we hit (up to max range)
-		GetLookVectorHitLocation(LookDirection, OutHitLocation);
+		GetLookVectorHitLocation(LookDirection, OUT OutHitLocation);
 	}
-
 
 	return true;
 }

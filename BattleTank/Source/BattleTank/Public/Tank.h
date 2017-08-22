@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Caveman Games Copyright 2017
 
 #pragma once
 
@@ -6,11 +6,9 @@
 #include "GameFramework/Pawn.h"
 #include "Tank.generated.h"
 
-class UTankBarrel;
-class UTankTurret;
-class UTankAimingComponent;
-class AProjectile;
-
+/**
+ *
+ */
 UCLASS()
 class BATTLETANK_API ATank : public APawn
 {
@@ -20,40 +18,8 @@ public:
 	// Sets default values for this pawn's properties
 	ATank();
 
-	void AimAt(FVector HitLocation);
-
-	UFUNCTION(BlueprintCallable, Category="Tank")
-		void SetBarrelReference(UTankBarrel* BarrelToSet);
-
-	UFUNCTION(BlueprintCallable, Category = "Tank")
-		void SetTurretReference(UTankTurret* TurretToSet);
-
-	UFUNCTION(BlueprintCallable, Category = "Tank")
-		void Fire();
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UTankAimingComponent* TankAimingComponent = nullptr;
-
-public:	
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-private:
-
-	UPROPERTY(EditDefaultsOnly, Category = "Firing")
-		float LaunchSpeed = 4000.0f; // Sensible starting value of 1000 m/s
-
-	UPROPERTY(EditDefaultsOnly, Category = "Firing")
-		float ReloadTimeInSeconds = 3.f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		TSubclassOf<AProjectile> ProjectileBlueprint;
-
-	// Local Barrel reference for spawning Projectile
-	UTankBarrel* Barrel = nullptr;
-
-	double LastFireTime = 0.0;
 };

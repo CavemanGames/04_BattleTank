@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Caveman Games Copyright 2017
 
 #include "TankBarrel.h"
 
