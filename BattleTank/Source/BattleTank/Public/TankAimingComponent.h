@@ -51,7 +51,7 @@ public:
 	EFiringStates GetFiringStates() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Tank")
-	int GetAmmoBulletsLeft() const;
+		int32 GetAmmoBulletsLeft() const;
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Tank")
@@ -77,6 +77,7 @@ private:
 	void MoveBarrelTowards(FVector AimDirectionToSet);
 
 	bool IsBarrelMoving();
-
-	int AmmoBullets = 3;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+		int32 AmmoBullets = 3;
 };

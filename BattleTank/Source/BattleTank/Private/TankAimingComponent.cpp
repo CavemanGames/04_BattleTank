@@ -58,7 +58,7 @@ EFiringStates UTankAimingComponent::GetFiringStates() const
 	return FiringStates;
 }
 
-int UTankAimingComponent::GetAmmoBulletsLeft() const
+int32 UTankAimingComponent::GetAmmoBulletsLeft() const
 {
 	return AmmoBullets;
 }
