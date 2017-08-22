@@ -29,6 +29,9 @@ public:
 	//Start the Tank moving the Barrel
 	void AimTowardsCrosshair();
 
+	int GetAmmopBullets();
+	void SetAmmopBullets(int NewAmmoBulletsValue);
+
 private:
 	UPROPERTY(EditDefaultsOnly)
 		float CrosshairXLocation = 0.5;
@@ -36,6 +39,8 @@ private:
 		float CrosshairYLocation = 0.33333;
 	UPROPERTY(EditDefaultsOnly)
 		float LineTraceRange = 1000000.0f;
+	UPROPERTY(EditDefaultsOnly)
+		int AmmoBullets = 3;
 
 	UTankAimingComponent* AimingComponent;
 

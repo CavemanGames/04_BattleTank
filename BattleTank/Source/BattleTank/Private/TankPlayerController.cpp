@@ -25,15 +25,29 @@ void ATankPlayerController::Tick(float DeltaTime)
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	if (!ensure(GetPawn())) { return; }
+	if (!GetPawn()) { return; }
 
 	AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	if (!ensure(AimingComponent)) { return; }
-	FVector HitLocation;	// Out parameter
-	if (GetSightRayHitLocation(HitLocation)) // Has "side-efect", is going to line trace
+
+	FVector HitLocation; // Out parameter
+
+	bool bGotHitLocation = GetSightRayHitLocation(HitLocation);
+
+	if (bGotHitLocation) // Has "side-efect", is going to line trace
 	{
 		AimingComponent->AimAt(HitLocation);
 	}
+}
+
+void ATankPlayerController::SetAmmopBullets(int NewAmmoBulletsValue)
+{
+	AmmoBullets = NewAmmoBulletsValue;
+}
+
+int ATankPlayerController::GetAmmopBullets()
+{
+	return AmmoBullets;
 }
 
 // Get world location of linetrace through crosshair, true if hits landscape
@@ -52,10 +66,10 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) cons
 	if (GetLookDirection(ScreenLocation, LookDirection))
 	{
 		// Line-trace along that look direction, and see what we hit (up to max range)
-		GetLookVectorHitLocation(LookDirection, OUT OutHitLocation);
+		return GetLookVectorHitLocation(LookDirection, OUT OutHitLocation);
 	}
 
-	return true;
+	return false;
 }
 
 bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector & LookDirection) const

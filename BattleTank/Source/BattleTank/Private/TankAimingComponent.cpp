@@ -19,6 +19,7 @@ UTankAimingComponent::UTankAimingComponent()
 
 void UTankAimingComponent::BeginPlay()
 {
+	Super::BeginPlay();
 	LastFireTime = FPlatformTime::Seconds();
 }
 
@@ -26,7 +27,12 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {	
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
+
+	if(AmmoBullets <= 0)
+	{
+		FiringStates = EFiringStates::OutOfAmmo;
+	}
+	else if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
 	{
 		FiringStates = EFiringStates::Reloading;
 	}
@@ -45,6 +51,16 @@ void UTankAimingComponent::Initialise(UTankBarrel * BarrelToSet, UTankTurret * T
 	if (!ensure(BarrelToSet && TurretToSet)) { return; }
 	Barrel = BarrelToSet;
 	Turret = TurretToSet;
+}
+
+EFiringStates UTankAimingComponent::GetFiringStates() const
+{
+	return FiringStates;
+}
+
+int UTankAimingComponent::GetAmmoBulletsLeft() const
+{
+	return AmmoBullets;
 }
 
 void UTankAimingComponent::AimAt(FVector HitLocation)
@@ -78,12 +94,14 @@ void UTankAimingComponent::Fire()
 {
 	if (!ensure(Barrel)) { return; }
 	if (!ensure(ProjectileBlueprint)) { return; }
-	if (FiringStates != EFiringStates::Reloading)
+
+	if (FiringStates == EFiringStates::Locked || FiringStates == EFiringStates::Aiming)
 	{
 		//Spawn a projectile at the socket location of barrel
 		AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Barrel->GetSocketLocation(FName("Projectile")), Barrel->GetSocketRotation(FName("Projectile")));
 		projectile->LaunchProjectile(LaunchSpeed);
 		LastFireTime = FPlatformTime::Seconds();
+		AmmoBullets--;
 	}
 }
 
@@ -96,6 +114,15 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirectionToSet)
 	FRotator AimAsRotator = AimDirection.Rotation();
 	FRotator DeltaRotator = AimAsRotator - BarrelRotator;
 		
+	if (FMath::Abs<float>(DeltaRotator.Pitch) > 180.f)
+	{
+		DeltaRotator.Pitch = (-360.f * FMath::Sign<float>(DeltaRotator.Pitch)) + DeltaRotator.Pitch;
+	}
+	if (FMath::Abs<float>(DeltaRotator.Yaw) > 180.f)
+	{
+		DeltaRotator.Yaw = (-360.f * FMath::Sign<float>(DeltaRotator.Yaw)) + DeltaRotator.Yaw;
+	}
+
 	Barrel->Elevate(DeltaRotator.Pitch);
 	Turret->Rotation(DeltaRotator.Yaw);
 }
