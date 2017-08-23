@@ -2,6 +2,7 @@
 
 #include "TankAIController.h"
 #include "TankAimingComponent.h"
+#include "Tank.h"
 
 void ATankAIController::BeginPlay()
 {
@@ -23,4 +24,23 @@ void ATankAIController::Tick(float DeltaTime)
 
 	if(AimingComponent->GetFiringStates() == EFiringStates::Locked)
 		AimingComponent->Fire();
+}
+
+void ATankAIController::SetPawn(APawn * InPawn)
+{
+	Super::SetPawn(InPawn);
+
+	if (InPawn)
+	{
+		auto PossessedTank = Cast<ATank>(InPawn);
+		if (!ensure(PossessedTank)) { return; }
+		PossessedTank->OnTankDied.AddUniqueDynamic(this, &ATankAIController::OnPossedTankDeath);
+	}
+}
+
+void ATankAIController::OnPossedTankDeath()
+{
+	if (!ensure(GetPawn())) { return; }
+
+	GetPawn()->DetachFromControllerPendingDestroy();
 }

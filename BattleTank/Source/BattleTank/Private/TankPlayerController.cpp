@@ -2,6 +2,7 @@
 
 #include "TankPlayerController.h"
 #include "TankAimingComponent.h"
+#include "Tank.h"
 
 #define OUT
 
@@ -50,6 +51,23 @@ int ATankPlayerController::GetAmmopBullets()
 	return AmmoBullets;
 }
 
+void ATankPlayerController::SetPawn(APawn * InPawn)
+{
+	Super::SetPawn(InPawn);
+
+	if (InPawn)
+	{
+		auto PossessedTank = Cast<ATank>(InPawn);
+		if (!ensure(PossessedTank)) { return; }
+		PossessedTank->OnTankDied.AddUniqueDynamic(this, &ATankPlayerController::OnPossedTankDeath);
+	}
+}
+
+void ATankPlayerController::OnPossedTankDeath()
+{
+	StartSpectatingOnly();
+}
+
 // Get world location of linetrace through crosshair, true if hits landscape
 bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) const
 {
@@ -84,7 +102,7 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVec
 	FVector LineTraceStart = PlayerCameraManager->GetCameraLocation();
 	FVector LineTraceEnd = LineTraceStart + (LookDirection * LineTraceRange);
 
-	if (GetWorld()->LineTraceSingleByChannel(OUT HitResult, LineTraceStart, LineTraceEnd, ECollisionChannel::ECC_Visibility)) // LineTrace Succeeds
+	if (GetWorld()->LineTraceSingleByChannel(OUT HitResult, LineTraceStart, LineTraceEnd, ECollisionChannel::ECC_Camera)) // LineTrace Succeeds
 	{
 		HitLocation = HitResult.Location;
 		return true;

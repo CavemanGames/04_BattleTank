@@ -9,6 +9,7 @@
 class UProjectileMovementComponent;
 class UParticleSystemComponent;
 class UStaticMeshComponent;
+class URadialForceComponent;
 
 UCLASS()
 class BATTLETANK_API AProjectile : public AActor
@@ -31,17 +32,23 @@ protected:
 	
 	UProjectileMovementComponent* ProjectileMovement = nullptr;
 
-	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 		UStaticMeshComponent* CollisionMesh = nullptr;
 
-	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* LaunchBlast = nullptr;
 
-	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* ImpactBlast = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 		float TimeDelayToParticles = 5.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+		float DemageOfProjectile = 20.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+		URadialForceComponent* ExplosionForce = nullptr;
 
 public:	
 	// Called every frame
@@ -49,7 +56,6 @@ public:
 
 	void LaunchProjectile(float Speed);
 	
-
 private:
 	FTimerHandle Delay;
 };

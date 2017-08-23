@@ -42,6 +42,11 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 		int AmmoBullets = 3;
 
+	virtual void SetPawn(APawn* InPawn) override;
+
+	UFUNCTION()
+		void OnPossedTankDeath();
+
 	UTankAimingComponent* AimingComponent;
 
 	bool GetSightRayHitLocation(FVector& OutHitLocation) const;
